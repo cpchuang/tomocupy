@@ -76,6 +76,10 @@ class Reader():
             data = file_in['/exchange/data']
             dark = file_in['/exchange/data_dark']
             flat = file_in['/exchange/data_white']
+            # for MPE dataset
+            if "/exchange/data_white_post" in file_in.keys():
+                flat2 = file_in['exchange/data_white_post']
+
             nproj, nzi, ni = data.shape[:]
             ndark = dark.shape[0]
             nflat = flat.shape[0]
@@ -94,8 +98,12 @@ class Reader():
         """Read projection angles (in radians)"""
 
         with h5py.File(self.args.file_name) as file_in:
-            theta = file_in['/exchange/theta'][:].astype('float32')/180*np.pi
-
+        #    theta = file_in['/exchange/theta'][:].astype('float32')/180*np.pi
+            if "/exchange/theta" in file_in.keys():
+                theta = file_in['/exchange/theta'][:].astype('float32')/180*np.pi
+            else:
+                theta = file_in['omegas'][:].astype('float32')
+        
         return theta
 
     def read_data_chunk_to_queue(self, data_queue, ids_proj, st_z, end_z, st_n, end_n, id_z, in_dtype):
