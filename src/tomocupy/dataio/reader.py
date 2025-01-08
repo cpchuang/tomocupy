@@ -61,7 +61,9 @@ class Reader():
     Class for reading APS DXfiles and configure array sizes as required by tomocupy
     '''
 
-    def __init__(self):
+    def __init__(self, args):
+
+        self.args = args
 
         if args.dark_file_name == None:
             args.dark_file_name = args.file_name
@@ -117,7 +119,8 @@ class Reader():
         # define projection chunk size for processing
         ncproj = args.nproj_per_chunk
 
-        centeri = args.rotation_axis
+        #centeri = args.rotation_axis
+        centeri = args.rotation_axis + ni/2  # now "0.0" will be center of FOV, hopefully this change does not mess up "double_FOV"
         if centeri == -1:
             centeri = ni/2
 
@@ -227,10 +230,9 @@ class Reader():
         if args.reconstruction_type == 'try':
             #shift_array = np.arange(-args.center_search_width,
             #                        args.center_search_width, args.center_search_step*2**args.binning).astype('float32')/2**args.binning
-
+            print(f"Rot_center: {params.centeri} (absolute)")
             # use fixed search width, 10 steps on each side instead.
-            shift_array = np.linspace(-self.args.center_search_step*10,
-                                    self.args.center_search_step*10, 21).astype('float32')/2**self.args.binning
+            shift_array = np.linspace(-args.center_search_step*10, args.center_search_step*10, 21).astype('float32')/2**self.args.binning
 
             # invert shifts for calculations if centeri<ni for double_fov
             save_centers = (params.centeri - shift_array) * \

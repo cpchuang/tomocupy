@@ -180,7 +180,7 @@ def main():
         if args._func == init:
             args._func(args)
         else:
-            cl_reader = reader.Reader()
+            cl_reader = reader.Reader(args)
             cl_writer = writer.Writer()
             args._func(args, cl_reader, cl_writer)
     except RuntimeError as e:
