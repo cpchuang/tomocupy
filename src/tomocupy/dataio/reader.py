@@ -225,9 +225,14 @@ class Reader():
         """Calculating sizes for try reconstruction by chunks"""
 
         if args.reconstruction_type == 'try':
+            #shift_array = np.arange(-args.center_search_width,
+            #                        args.center_search_width, args.center_search_step*2**args.binning).astype('float32')/2**args.binning
+
+            # use fixed search width, 10 steps on each side instead.
+            shift_array = np.linspace(-self.args.center_search_step*10,
+                                    self.args.center_search_step*10, 21).astype('float32')/2**self.args.binning
+
             # invert shifts for calculations if centeri<ni for double_fov
-            shift_array = np.arange(-args.center_search_width,
-                                    args.center_search_width, args.center_search_step*2**args.binning).astype('float32')/2**args.binning
             save_centers = (params.centeri - shift_array) * \
                 2**args.binning+params.st_n
             if (args.file_type == 'double_fov') and (params.centeri < params.ni//2):
